@@ -61,25 +61,39 @@
 - [ ] 다양한 필터 조건 테스트를 위한 데이터셋 구성
 - [ ] 성능 테스트를 위한 데이터 볼륨 확보
 
+### 2.5 상품 이미지 상세 연동
+
+- [x] 상품 상세에서 다중 이미지 조회 (S3 URL)
+
 ---
 
 ## Phase 3: 필터 기능
 
-### 3.1 상품 카테고리/아티스트 모델 추가
+### 3.1 상품 카테고리/태그 모델 추가
 
-- [ ] `Category` Entity 생성 (id, name)
-- [ ] `Artist` Entity 생성 (id, name)
-- [ ] `Product` Entity에 category, artist 필드 추가
-- [ ] tags 필드 추가 (JSON 또는 별도 테이블)
+- [x] `Category` Entity 생성 (code, display_name, is_active, sort_order)
+- [x] `Product` Entity에 category 필드 추가
+- [x] tags 테이블/조인 엔티티 추가
+- 변경 이력: RFP-01에 artist/artistId가 있으나 MVP에서는 tags로 대체
+
+### 3.4 카테고리 반영 (프론트 연동 전 준비)
+
+- [ ] 카테고리 목록 DB 조회 API 준비
+- [ ] 상품 리스트/상세에 카테고리 값 반영
+
+### 3.5 태그/시간 UI 준비 (프론트)
+
+- [ ] 상품 상세 UI에 해시태그 표시
+- [ ] 상품 시간 표시를 상대 시간으로 변환 (n분/시간/일/년 전)
 
 ### 3.2 필터 API 파라미터 추가
 
 - [ ] `GET /products` 파라미터 확장:
   - [ ] `status` (SELLING/RESERVED/SOLD)
   - [ ] `categoryId`
-  - [ ] `artistId`
   - [ ] `minPrice`, `maxPrice`
   - [ ] `tradeType` (DIRECT/DELIVERY/BOTH)
+- 변경 이력: RFP-01의 `artistId`는 MVP에서 미사용(태그로 대체)
 
 ### 3.3 필터 쿼리 구현
 
@@ -123,7 +137,6 @@
 
 - ~~검색 기능 (제목/태그/아티스트 검색)~~ → 캐싱 우선
 - ~~가격 정렬 (낮은순/높은순)~~ → Phase 3 이후 시간 있으면
-- ~~다중 이미지 지원 (product_images 테이블)~~ → 단일 이미지로 진행
 - ~~실시간 채팅~~ → MVP 이후
 - ~~OpenSearch 도입~~ → MVP 이후
 
