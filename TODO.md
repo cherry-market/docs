@@ -33,26 +33,33 @@
 
 ---
 
-## Phase 2: 찜(픽) 기능
+## Phase 2: 찜(픽) 기능 ✅
 
 ### 2.1 데이터 모델
 
-- [ ] `ProductLike` Entity 생성 (user_id, product_id, created_at)
-- [ ] 복합 유니크 인덱스 설정 (user_id + product_id)
-- [ ] `ProductLikeRepository` 작성
+- [x] `ProductLike` Entity 생성 (user_id, product_id, created_at)
+- [x] 복합 유니크 인덱스 설정 (user_id + product_id)
+- [x] `ProductLikeRepository` 작성
 
 ### 2.2 찜 API
 
-- [ ] `POST /products/{productId}/like` - 찜 추가
-- [ ] `DELETE /products/{productId}/like` - 찜 취소
-- [ ] `GET /products/{productId}/like-status` - 찜 여부 확인 (선택)
-- [ ] 인증 필수 처리 (로그인 사용자만)
+- [x] `POST /products/{productId}/like` - 찜 추가
+- [x] `DELETE /products/{productId}/like` - 찜 취소
+- [x] `GET /products/{productId}/like-status` - 찜 여부 확인
+- [x] 인증 필수 처리 (로그인 사용자만)
 
 ### 2.3 찜 목록 조회
 
-- [ ] `GET /me/likes` - 내가 찜한 상품 목록
-- [ ] 커서 기반 페이지네이션 적용
-- [ ] ProductSummaryResponse 형식으로 반환
+- [x] `GET /me/likes` - 내가 찜한 상품 목록
+- [x] 커서 기반 페이지네이션 적용
+- [x] ProductSummaryResponse 형식으로 반환
+
+### 2.4 목업 데이터 생성 준비
+
+- [ ] 대량 테스트 데이터 생성 스크립트 작성
+- [ ] 카테고리/아티스트/상품 더미 데이터 생성
+- [ ] 다양한 필터 조건 테스트를 위한 데이터셋 구성
+- [ ] 성능 테스트를 위한 데이터 볼륨 확보
 
 ---
 
