@@ -1,6 +1,6 @@
 # Cherry Backend TODO
 
-> **작업 우선순위**: 포트폴리오 제출 전까지 완료 목표
+> **작업 우선순위**: 외부 공유/데모 전까지 완료 목표
 
 ---
 
@@ -56,10 +56,10 @@
 
 ### 2.4 목업 데이터 생성 준비
 
-- [ ] 대량 테스트 데이터 생성 스크립트 작성
-- [ ] 카테고리/아티스트/상품 더미 데이터 생성
-- [ ] 다양한 필터 조건 테스트를 위한 데이터셋 구성
-- [ ] 성능 테스트를 위한 데이터 볼륨 확보
+- [x] 대량 테스트 데이터 생성 스크립트 작성
+- [x] 카테고리/아티스트/상품 더미 데이터 생성
+- [x] 다양한 필터 조건 테스트를 위한 데이터셋 구성
+- [x] 성능 테스트를 위한 데이터 볼륨 확보
 
 ### 2.5 상품 이미지 상세 연동
 
@@ -78,58 +78,58 @@
 
 ### 3.4 카테고리 반영 (프론트 연동 전 준비)
 
-- [ ] 카테고리 목록 DB 조회 API 준비
-- [ ] 상품 리스트/상세에 카테고리 값 반영
+- [x] 카테고리 목록 DB 조회 API 준비
+- [x] 상품 리스트/상세에 카테고리 값 반영
 
 ### 3.5 태그/시간 UI 준비 (프론트)
 
-- [ ] 상품 상세 UI에 해시태그 표시
-- [ ] 상품 시간 표시를 상대 시간으로 변환 (n분/시간/일/년 전)
+- [x] 상품 상세 UI에 해시태그 표시
+- [x] 상품 시간 표시를 상대 시간으로 변환 (n분/시간/일/년 전)
 
 ### 3.2 필터 API 파라미터 추가
 
-- [ ] `GET /products` 파라미터 확장:
-  - [ ] `status` (SELLING/RESERVED/SOLD)
-  - [ ] `categoryId`
-  - [ ] `minPrice`, `maxPrice`
-  - [ ] `tradeType` (DIRECT/DELIVERY/BOTH)
+- [x] `GET /products` 파라미터 확장:
+  - [x] `status` (SELLING/RESERVED/SOLD)
+  - [x] `categoryCode`
+  - [x] `minPrice`, `maxPrice`
+  - [x] `tradeType` (DIRECT/DELIVERY/BOTH)
+  - [x] `sortBy` (LATEST/LOW_PRICE/HIGH_PRICE)
 - 변경 이력: RFP-01의 `artistId`는 MVP에서 미사용(태그로 대체)
 
 ### 3.3 필터 쿼리 구현
 
-- [ ] `ProductRepository`에 동적 쿼리 추가 (QueryDSL 또는 Specification)
-- [ ] 필터 조합 시 AND 조건 처리
-- [ ] 커서 페이지네이션과 필터 조합 테스트
+- [x] `ProductRepository`에 동적 쿼리 추가 (Criteria API custom query)
+- [x] 필터 조합 시 AND 조건 처리
+- [x] 커서 페이지네이션과 필터 조합 테스트
 
 ---
 
-## Phase 4: 상품 리스트 캐싱 (성능 개선 포트폴리오용)
+## Phase 4: 상품 리스트 캐싱
 
-> **목적**: 현재 커서 기반 조회를 느리게 만든 뒤, 캐싱으로 개선하는 과정을 포트폴리오에 포함
+> **목적**: 현재 커서 기반 조회를 느리게 만든 뒤, 캐싱으로 개선하는 과정을 개발 기록에 포함
 
 ### 4.1 성능 저하 시나리오 구성
 
-- [ ] 대량 테스트 데이터 생성 (10만 건 이상)
-- [ ] 복잡한 쿼리 추가하여 의도적으로 응답 속도 저하
-- [ ] 성능 측정 (before 기준 수치 확보)
+- [x] 대량 테스트 데이터 생성 (1만 건)
+- [x] 성능 측정 (before 기준 수치 확보)
 
 ### 4.2 Redis 캐싱 전략 설계
 
-- [ ] 캐시 키 설계: `products:list:{cursor}:{filters}`
-- [ ] TTL 설정 (예: 5분)
-- [ ] 캐시 무효화 정책 (상품 등록/수정/삭제 시)
+- [x] 캐시 키 설계: `products:list:{cursor}:{filters}`
+- [x] TTL 설정 (예: 5분)
+- [x] 캐시 무효화 정책 (상품 등록/수정/삭제 시)
 
 ### 4.3 캐싱 구현
 
-- [ ] `@Cacheable` 어노테이션 적용 또는 수동 Redis 캐싱
-- [ ] Cache-Aside 패턴 구현
-- [ ] `ProductListResponse` 직렬화/역직렬화 처리
+- [x] `@Cacheable` 어노테이션 적용 또는 수동 Redis 캐싱
+- [x] Cache-Aside 패턴 구현
+- [x] `ProductListResponse` 직렬화/역직렬화 처리
 
 ### 4.4 성능 비교 및 문서화
 
-- [ ] 캐싱 적용 후 성능 측정 (after 수치)
-- [ ] Before/After 비교 표 작성
-- [ ] 포트폴리오용 개선 보고서 작성 (`docs/performance_improvement.md`)
+- [x] 캐싱 적용 후 성능 측정 (after 수치)
+- [x] Before/After 비교 표 작성
+- [x] 성능 개선 보고서 작성 (`docs/reports/phase-4/performance_improvement.md`)
 
 ---
 
@@ -143,7 +143,7 @@
 ---
 
 **우선순위 요약**:  
-1️⃣ 인증 → 2️⃣ 찜 → 3️⃣ 필터 → 4️⃣ 캐싱 (포트폴리오용)
+1️⃣ 인증 → 2️⃣ 찜 → 3️⃣ 필터 → 4️⃣ 캐싱
 
 **작업 시작일**: 2026-01-21  
-**목표 완료일**: 포트폴리오 제출 전
+**목표 완료일**: 2026-01-24

@@ -13,7 +13,7 @@ VITE_API_BASE_URL=http://localhost:8080
 #### Production (.env.production)
 
 ```env
-VITE_API_BASE_URL=https://api.cherriy.com
+VITE_API_BASE_URL=https://api.cheryi.com
 ```
 
 ### Backend (cherry-server)
@@ -21,15 +21,15 @@ VITE_API_BASE_URL=https://api.cherriy.com
 #### Production Environment Variables
 
 ```env
-CORS_ALLOWED_ORIGINS=https://cherriy.com,https://www.cherriy.com
+CORS_ALLOWED_ORIGINS=https://cheryi.com,https://www.cheryi.com
 ```
 
 ## Architecture
 
-| Environment | Frontend Domain       | Backend Domain          |
-| ----------- | --------------------- | ----------------------- |
-| Local       | http://localhost:3000 | http://localhost:8080   |
-| Production  | https://cherriy.com   | https://api.cherriy.com |
+| Environment | Frontend Domain       | Backend Domain         |
+| ----------- | --------------------- | ---------------------- |
+| Local       | http://localhost:3000 | http://localhost:8080  |
+| Production  | https://cheryi.com    | https://api.cheryi.com |
 
 ## Deployment Checklist
 
@@ -38,7 +38,7 @@ CORS_ALLOWED_ORIGINS=https://cherriy.com,https://www.cherriy.com
 1. Set environment variable:
 
    ```bash
-   VITE_API_BASE_URL=https://api.cherriy.com npm run build
+   VITE_API_BASE_URL=https://api.cheryi.com npm run build
    ```
 
 2. Upload `dist/` to S3 bucket
@@ -50,7 +50,7 @@ CORS_ALLOWED_ORIGINS=https://cherriy.com,https://www.cherriy.com
 1. Set environment variable on EC2:
 
    ```bash
-   export CORS_ALLOWED_ORIGINS=https://cherriy.com,https://www.cherriy.com
+   export CORS_ALLOWED_ORIGINS=https://cheryi.com,https://www.cheryi.com
    ```
 
 2. Restart application
@@ -81,7 +81,7 @@ Frontend will call `http://localhost:8080` directly (no proxy needed).
 
 - Environment variable based API URL configuration
 - Single API client entry point (api.ts)
-- Production CORS configuration for cherriy.com
+- Production CORS configuration for cheryi.com
 
 **Benefits:**
 

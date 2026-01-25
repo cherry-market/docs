@@ -1,11 +1,11 @@
 # Phase 2 Work Order: Pick (Wishlist) Feature
 
 **Assigned To**: Codex (AI Agent)
-**Priority**: High (Must complete for Portfolio)
+**Priority**: High (Must complete for MVP milestone)
 **References**:
 
-- `@[cherry-docs/TODO.md]`: Phase 2 Requirements
-- `@[cherry-docs/ARCHITECTURE.md]`: Architecture Standard
+- `@[cherry-docs/reports/shared/TODO.md]`: Phase 2 Requirements
+- `@[cherry-docs/architecture/mvp/ARCHITECTURE.md]`: Architecture Standard
 - `@[AGENTS.md]`: Coding Standards & Conventions
 
 ---
@@ -419,7 +419,7 @@ module.exports = {
 
 **Rationale**:
 
-- Current Traffic: < 100 req/s (Portfolio Project)
+- Current Traffic: < 100 req/s (Early-stage MVP)
 - Data Consistency: 100% guaranteed with DB query
 - Implementation Complexity: Low
 - Alternative (Cached Column): Requires transaction management, overkill for MVP

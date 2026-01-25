@@ -382,7 +382,7 @@ export const useProducts = () => {
 - ✅ 찜 추가: UI 즉시 반응, DB 저장 성공
 - ✅ 찜 제거: UI 즉시 반응, DB 삭제 성공
 - ✅ Count 증가: 숫자 정상 표시
-- ✅ Count 감소: 숫자 정상 감소 ✅ **(최종 수정 완료)**
+- ✅ Count 감소: 숫자 정상 감소
 - ✅ Trending ↔ My Likes 동기화: 실시간 반영
 - ✅ API 실패 시 Rollback: 정상 복구
 
@@ -395,13 +395,11 @@ export const useProducts = () => {
 
 ---
 
-## 🎉 결론
+## 🎉 요약
 
-Cherry의 픽 기능은 **Zustand Global Store**를 중심으로 다음과 같이 동작합니다:
+픽 기능은 **Zustand Global Store**를 중심으로 다음과 같이 동작합니다:
 
 1. **Single Source of Truth**: `wishStore.likedProductIds`가 유일한 찜 상태
 2. **Optimistic Update**: UI 즉시 반응 → 네트워크 후순위
 3. **Auto Sync**: Store 변경 시 모든 PickButton 자동 업데이트
 4. **Resilient**: API 실패 시 자동 Rollback
-
-모든 버그가 수정되었으며, 프로덕션 배포 준비 완료 상태입니다.
