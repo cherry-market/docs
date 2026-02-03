@@ -47,6 +47,57 @@ flowchart LR
 - Spring Boot는 비즈니스 로직 처리 중 RDS(MySQL)와 Redis를 사용한다.
 - 응답은 ALB를 통해 브라우저로 반환된다.
 
+이미지 업로드 파이프라인 (S3 + Lambda)
+
+흐름
+
+- Client → Backend(presign) → S3(products/original/) → Lambda(resize) → S3(detail/thumb) → Backend(callback) → DB update
+
+S3 버킷/리전
+
+- 버킷: cheryi-product-images-prod
+- 리전: ap-northeast-2
+
+경로 규칙
+
+- 원본 업로드(prefix): products/original/
+- 리사이즈 결과:
+  - products/detail/
+  - products/thumb/
+- 기존 mock 경로(레거시/테스트):
+  - mock/products/images/detail/
+  - mock/products/images/thumb/
+
+보안/접근 정책
+
+- products/original/ 은 공개 접근 불가
+- products/detail/ 및 products/thumb/ 은 공개 GET 허용
+- mock 경로도 퍼블릭 GET 허용(기존 연결용)
+
+Lambda 동작(런타임: Node.js 20.x)
+
+- S3 이벤트 key 디코딩: decodeURIComponent(key.replace(/\+/g, ' '))
+- 재귀 방지 가드
+  - products/original/ 이외는 즉시 return
+  - products/detail/ 또는 products/thumb/ 는 즉시 return
+- 리사이즈 규칙
+  - detail: 긴 변 1280px, 비율 유지, withoutEnlargement: true
+  - thumb: resize(256, 256, { fit: 'cover', position: 'centre' })
+- S3 업로드 시 CacheControl: public, max-age=31536000, immutable
+- 업로드 보호: HeadObject(ContentLength)로 20MB 상한 체크
+  - IAM에 s3:GetObject 권한이 포함되어야 HeadObject 사용 가능
+- 콜백 호출
+  - URL: https://api.cheryi.com/internal/images/complete
+  - Header: X-Internal-Token: INTERNAL_TOKEN
+  - Body: imageKey, detailUrl, thumbnailUrl, imageOrder(0), isThumbnail(false)
+- 콜백 실패 시 CloudWatch 로그에 awsRequestId, originalKey, detailKey, thumbKey, callbackStatus, callbackBody(1KB truncate) 포함 후 throw
+- 실패는 throw로 남기고, 필요 시 DLQ/SQS 연동 여지를 둔다
+
+URL 정책
+
+- 현재는 S3 public URL 사용
+- 추후 CloudFront로 전환 가능(옵션)
+
 포트/프로토콜
 
 - Front 도메인 (cheryi.com)
@@ -68,6 +119,18 @@ flowchart LR
 Front 배포 - GitHub Actions로 프론트 빌드 - 빌드 결과물을 S3에 업로드 - CloudFront가 S3의 정적 파일을 캐시/서빙
 
 Backend 배포 - GitHub Actions로 백엔드 Docker 이미지 빌드 → GHCR push - EC2에서 docker compose로 이미지 pull 후 컨테이너 재시작 - 환경변수는 GitHub Secrets에서 전달되어 EC2에 .env 생성 후 docker compose –env-file로 주입 - 컨테이너는 8080 포트로 구동
+
+이미지 파이프라인 검증 시나리오 (운영 체크)
+
+- products/original/<uuid>.jpg 업로드
+- Lambda 실행 로그(CloudWatch) 확인
+- products/detail/, products/thumb/ 생성 확인
+- detail/thumb URL 200 확인
+- 콜백 응답 200/204 확인
+- 실패 케이스
+  - original 아닌 prefix 업로드 시 즉시 return 로그
+  - INTERNAL_TOKEN 누락 시 401/403 로그
+  - ContentLength 상한 초과 시 실패 로그
 
 운영 환경의 “사실” 체크리스트 - EC2 내부: curl http://localhost:8080/health 는 200이어야 한다. - 외부: curl https://api.cheryi.com/health 는 200이어야 한다. - 브라우저에서 https://cheryi.com은 정적 화면을 정상 렌더링해야 한다. - 브라우저에서 API 호출 시 CORS 정책은 prod에서 https://cheryi.com만 허용해야 한다.
 
