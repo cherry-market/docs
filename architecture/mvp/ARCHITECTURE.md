@@ -51,7 +51,45 @@ flowchart LR
 
 흐름
 
-- Client → Backend(presign) → S3(products/original/) → Lambda(resize) → S3(detail/thumb) → Backend(callback) → DB update
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant B as Backend
+    participant S3 as S3
+    participant L as Lambda
+    participant DB as Database
+
+    C->>B: POST /api/upload/images (요청: 파일 개수, 확장자)
+    B->>B: 유효성 검증 (최대 10장, 확장자, 크기)
+    B->>S3: Generate Presigned URL (PutObject)
+    B-->>C: Presigned URL 목록 반환
+    C->>S3: PUT (원본 이미지 직접 업로드)
+    S3->>L: S3 Event (ObjectCreated)
+    L->>S3: GetObject (원본)
+    L->>L: Resize (detail: 1280px, thumb: 256x256)
+    L->>S3: PutObject (detail, thumb)
+    L->>B: POST /internal/images/complete (콜백)
+    B->>DB: ProductImage 저장/업데이트
+    B-->>L: 200 OK
+```
+
+Backend Presigned URL 발급
+
+- IAM 사용자: cheryi-backend-s3-uploader
+- 권한: s3:PutObject (products/original/* 경로만)
+- 환경변수 (GitHub Secrets → EC2 .env):
+  - AWS_ACCESS_KEY_ID
+  - AWS_SECRET_ACCESS_KEY
+  - AWS_REGION
+  - AWS_S3_BUCKET
+- Presigned URL 만료: 5분 (300초)
+
+업로드 제한
+
+- 최대 이미지 수: 10장
+- 장당 최대 크기: 10MB
+- 허용 확장자: jpg, jpeg, png, webp
+- 허용 Content-Type: image/jpeg, image/png, image/webp
 
 S3 버킷/리전
 
