@@ -8,12 +8,26 @@
 
 ### 1.1 이미지 업로드 (Image Upload)
 
-- **API**: `POST /api/upload/images` (Multipart/form-data)
+- **API**: `POST /api/upload/images` (JSON)
 - **기능**:
-  - 다중 이미지 업로드 (최대 10장)
-  - 포맷 검증 (JPG, PNG, WebP) 및 용량 제한 (장당 10MB)
-  - S3 (또는 Local) 저장 후 URL 반환
-- **Output**: `List<String> imageUrls`
+  - 업로드 준비(다중, 최대 10장)용 presigned URL 발급
+  - 포맷 검증 (JPG/JPEG, PNG, WebP) 및 용량 제한 (장당 10MB)
+  - S3 업로드 key 규칙: `products/original/<uuid>.<ext>`
+  - 클라이언트는 반환된 `uploadUrl`로 `PUT` 업로드(필수 헤더 포함)
+  - 업로드 완료 후 상품 등록 API에 `imageKeys`로 전달
+- **Request 예시**:
+  - `files[].fileName`, `files[].contentType`, `files[].size`
+- **Response 예시**:
+  - `items[].imageKey`, `items[].uploadUrl`, `items[].requiredHeaders` (예: `Content-Type`)
+
+#### 1.1.1 운영 설정 / 권한
+
+- **서버 실행 환경변수**
+  - `INTERNAL_TOKEN` (Lambda 콜백 인증)
+  - `STORAGE_BUCKET`, `STORAGE_REGION`, `STORAGE_BASE_URL`, `STORAGE_PRESIGN_EXPIRE_SECONDS`
+- **서버 IAM 권한(필수)**
+  - `s3:PutObject` on `arn:aws:s3:::<bucket>/products/original/*`
+  - (선택) `s3:GetObject` on `arn:aws:s3:::<bucket>/products/detail/*`, `arn:aws:s3:::<bucket>/products/thumb/*`
 
 ### 1.2 AI 상품 설명 생성 (AI Write)
 
