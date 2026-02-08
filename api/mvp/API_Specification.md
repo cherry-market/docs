@@ -165,14 +165,39 @@
 
 ```json
 {
-  "generatedDescription": "안녕하세요! 아이브 장원영 포카 양도합니다 ✨ ..."
+  "generatedDescription": "안녕하세요! 아이브 장원영 포카 양도합니다 ✨ ...",
+  "remainingCount": 4
 }
 ```
 
-### 비고
+| Field | Type | Description |
+|-------|------|-------------|
+| `generatedDescription` | String | 생성된 판매글 본문 |
+| `remainingCount` | Integer | 오늘 남은 생성 횟수 |
 
-- Gemini API 키 미설정 시 fallback 메시지 반환
-- 타임아웃/에러 시에도 fallback 메시지 반환 (서비스 중단 없음)
+### Rate Limiting 정책
+
+인증 필수. Redis 기반으로 사용자당 제한을 적용합니다.
+
+| 제한 종류 | 값 | Redis 키 | TTL | 설명 |
+|-----------|-----|----------|-----|------|
+| **일일 횟수** | 5회/일 | `ai:limit:daily:{userId}` | 24시간 | 하루 최대 5번 생성 가능 |
+| **쿨다운** | 10초 | `ai:limit:cooldown:{userId}` | 10초 | 연속 요청 방지 |
+
+### 에러 응답
+
+| 상황 | HTTP Status | 메시지 |
+|------|-------------|--------|
+| 미인증 | 401 Unauthorized | `Login required` |
+| 일일 횟수 초과 | 429 Too Many Requests | `오늘 사용 횟수를 초과했습니다 (일일 5회)` |
+| 쿨다운 중 | 429 Too Many Requests | `잠시 후 다시 시도해주세요 (10초 쿨다운)` |
+| Gemini API 장애 | 200 OK | fallback 메시지 반환 (서비스 중단 없음) |
+| API 키 미설정 | 200 OK | fallback 메시지 반환 |
+
+### 프론트엔드 연동
+
+- 생성 결과 화면에 "오늘 N회 남음" 표시
+- 횟수 초과/쿨다운 시 서버 메시지를 사용자에게 alert 표시
 
 ---
 
