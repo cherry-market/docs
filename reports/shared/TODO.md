@@ -69,16 +69,18 @@
 - [x] SecurityConfig: `/products/my` 인증 필수, `/error` permitAll 추가
 - [x] DB: `status` ENUM에 PENDING 추가, `datetime(6)` → `datetime(0)` 전체 적용
 
-### 미완료 (Phase 5 잔여 — 선택 사항)
+### Phase 5 잔여 작업 ✅
 
-- [ ] **프론트엔드 이미지 일괄 업로드**: 현재 이미지를 개별 요청으로 보내 모든 이미지가 `0_t_` 인코딩됨. 한 요청으로 보내면 Lambda thumbnail 최적화 효과 발생
-- [ ] **PENDING 상품 상세 접근 제한**: 판매자 본인 외 PENDING 상품 직접 접근 차단
-- [ ] **GET /products/my 프론트 연동**: 판매자 마이페이지에서 PENDING 상태 "처리 중" 표시
+- [x] **Lazy Upload (이미지 업로드 지연)**: 이미지 선택 시 로컬 미리보기만, 등록 시점에 전체 파일 한 번에 업로드 → 올바른 인덱싱 + 고아 이미지 방지
+- [x] **PENDING 상품 상세 접근 제한**: 판매자 본인 외 PENDING 상품 접근 시 404 반환
+- [x] **GET /products/my 프론트 연동**: MySalesPage 생성, StatusBadge에 PENDING("처리중") 추가, 마이페이지 네비게이션 연결
 
-### 5.4 AI 상품 설명 생성 (미착수)
+### 5.4 AI 상품 설명 생성 ✅
 
-- [ ] 키워드 기반 설명 자동 생성 프롬프트
-- [ ] `POST /ai/generate-description` 엔드포인트
+- [x] Google Gemini API (gemini-2.0-flash) 연동
+- [x] 키워드/카테고리/성격/말투 기반 판매글 자동 생성
+- [x] `POST /api/ai/generate-description` 엔드포인트
+- [x] API 키 미설정 시 fallback 메시지 반환
 
 ---
 

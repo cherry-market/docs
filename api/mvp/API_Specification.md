@@ -101,7 +101,82 @@
 
 ---
 
-## 4. 서버 상태 확인 (System)
+## 4. 내 판매 상품 목록
+
+`GET /products/my`
+
+로그인한 판매자의 상품 목록을 조회합니다 (PENDING 포함). 인증 필수.
+
+### Request
+
+| Parameter | Type    | Required | Default | Description |
+| :-------- | :------ | :------- | :------ | :---------- |
+| `cursor`  | String  | No       | null    | 커서 값 (`createdAt_id` 형태) |
+| `limit`   | Integer | No       | 20      | 한 번에 로딩할 개수 (최대 50) |
+
+### Response
+
+- 형식은 **상품 목록(`items`)**과 동일합니다.
+- `status`에 `PENDING`이 포함될 수 있습니다.
+
+### 접근 제한
+
+- 인증 필수 (미인증 시 401)
+
+---
+
+## 5. 상품 상세 접근 제한 (PENDING)
+
+`GET /products/{productId}`에서 PENDING 상태 상품은 **판매자 본인만** 조회 가능합니다.
+
+| 요청자 | 응답 |
+|--------|------|
+| 비로그인 | 404 Not Found |
+| 다른 사용자 | 404 Not Found (존재 자체 숨김) |
+| 판매자 본인 | 200 OK (정상 조회) |
+
+---
+
+## 6. AI 상품 설명 생성
+
+`POST /api/ai/generate-description`
+
+키워드 기반으로 K-POP 굿즈 판매글을 자동 생성합니다. Google Gemini API (gemini-2.0-flash) 사용.
+
+### Request
+
+```json
+{
+  "keywords": "아이브 장원영 포카, 미개봉",
+  "category": "PHOTOCARD",
+  "personality": "친근함",
+  "tone": "POLITE"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `keywords` | String | Yes | 상품 키워드 |
+| `category` | String | Yes | 카테고리 코드 |
+| `personality` | String | No | AI 성격 (친근함/귀여움/깔끔함) |
+| `tone` | String | No | 말투 (SHORT/POLITE/SOFT) |
+
+### Response
+
+```json
+{
+  "generatedDescription": "안녕하세요! 아이브 장원영 포카 양도합니다 ✨ ..."
+}
+```
+
+### 비고
+
+- Gemini API 키 미설정 시 fallback 메시지 반환
+- 타임아웃/에러 시에도 fallback 메시지 반환 (서비스 중단 없음)
+
+---
+
+## 7. 서버 상태 확인 (System)
 
 `GET /health`
 
